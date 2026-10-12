@@ -43,6 +43,9 @@ public abstract class Cuenta {
     public String getNumero() { return numero; }
     public double getSaldo() { return saldo; }
  
+    public String getTitular() { return titular; }
+    public Fecha getFechaApertura() { return fechaApertura; }
+    
     // Imprimir todos los datos
     public String imprimir() {
         return "Tipo: " + getTipo() + "\n"

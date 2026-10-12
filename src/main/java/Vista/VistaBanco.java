@@ -4,6 +4,9 @@
  */
 package Vista;
 
+import Modelo.Cuenta;
+import Controlador.ControladorBanco;
+import Modelo.Fecha;
 /**
  *
  * @author juanj
@@ -12,13 +15,36 @@ public class VistaBanco extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VistaBanco.class.getName());
 
+    private ControladorBanco controlador = new ControladorBanco();
     /**
      * Creates new form VistaBanco
      */
     public VistaBanco() {
         initComponents();
+        setLocationRelativeTo(null); // Centrar la ventana
+        fecha.setText("12/10/2026");
+        limpiarResultados();
     }
-
+    
+    private void limpiarResultados() {
+        numeroCuentaResultados.setText("-");
+        saldoActualResultados.setText("-");
+        fechaCreacionCuenta.setText("-");
+        tipoCuentaResultados.setText("-");
+        nombreTitularResultados.setText("-");
+    }
+    
+    private void mostrarDatosEnPantalla(Cuenta c) {
+        if (c != null) {
+            numeroCuentaResultados.setText(c.getNumero());
+            saldoActualResultados.setText("$ " + c.getSaldo());
+            fechaCreacionCuenta.setText(c.getFechaApertura().toString()); // Asegúrate de tener getFechaApertura() o accede al atributo
+            tipoCuentaResultados.setText(c.getTipo());
+            nombreTitularResultados.setText(c.getTitular()); // Asegúrate de tener getTitular() en tu clase Cuenta
+        } else {
+            limpiarResultados();
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -29,36 +55,48 @@ public class VistaBanco extends javax.swing.JFrame {
     private void initComponents() {
 
         jCheckBox1 = new javax.swing.JCheckBox();
-        jButton1 = new javax.swing.JButton();
+        botonCrearCuenta = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        seleccionTipoCuenta = new javax.swing.JComboBox<>();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField1 = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
+        numeroCuenta2 = new javax.swing.JTextField();
+        valorTransaccion = new javax.swing.JTextField();
+        botonConsignar = new javax.swing.JButton();
+        botonRetirar = new javax.swing.JButton();
+        consultaSaldo = new javax.swing.JButton();
+        verDatos = new javax.swing.JButton();
+        numeroCuenta = new javax.swing.JTextField();
+        nombreTitular = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jEditorPane1 = new javax.swing.JEditorPane();
+        saldoInicial = new javax.swing.JEditorPane();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jEditorPane2 = new javax.swing.JEditorPane();
+        cupoSobregiro = new javax.swing.JEditorPane();
+        fecha = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        numeroCuentaResultados = new javax.swing.JLabel();
+        saldoActualResultados = new javax.swing.JLabel();
+        fechaCreacionCuenta = new javax.swing.JLabel();
+        tipoCuentaResultados = new javax.swing.JLabel();
+        nombreTitularResultados = new javax.swing.JLabel();
 
         jCheckBox1.setText("jCheckBox1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton1.setText("Crear cuenta");
-        jButton1.addActionListener(this::jButton1ActionPerformed);
+        botonCrearCuenta.setText("Crear cuenta");
+        botonCrearCuenta.addActionListener(this::botonCrearCuentaActionPerformed);
 
         jLabel1.setText("Tipo:");
 
@@ -72,46 +110,71 @@ public class VistaBanco extends javax.swing.JFrame {
 
         jLabel6.setText("Cupo sobregiro:");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ahorros", "Corriente" }));
-        jComboBox1.addActionListener(this::jComboBox1ActionPerformed);
+        seleccionTipoCuenta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ahorros", "Corriente" }));
+        seleccionTipoCuenta.addActionListener(this::seleccionTipoCuentaActionPerformed);
 
         jLabel7.setText("Numero de cuenta:");
 
         jLabel8.setText("Valor:");
 
-        jTextField2.addActionListener(this::jTextField2ActionPerformed);
+        numeroCuenta2.addActionListener(this::numeroCuenta2ActionPerformed);
 
-        jButton2.setText("Consignar");
-        jButton2.addActionListener(this::jButton2ActionPerformed);
+        botonConsignar.setText("Consignar");
+        botonConsignar.addActionListener(this::botonConsignarActionPerformed);
 
-        jButton3.setText("Retirar");
-        jButton3.setActionCommand("Retirar");
-        jButton3.addActionListener(this::jButton3ActionPerformed);
+        botonRetirar.setText("Retirar");
+        botonRetirar.setActionCommand("Retirar");
+        botonRetirar.addActionListener(this::botonRetirarActionPerformed);
 
-        jButton4.setText("Consultar Saldo");
-        jButton4.setToolTipText("");
+        consultaSaldo.setText("Consultar Saldo");
+        consultaSaldo.setToolTipText("");
+        consultaSaldo.addActionListener(this::consultaSaldoActionPerformed);
 
-        jButton5.setText("Ver todos los datos");
-        jButton5.addActionListener(this::jButton5ActionPerformed);
+        verDatos.setText("Ver todos los datos");
+        verDatos.addActionListener(this::verDatosActionPerformed);
 
-        jTextField3.addActionListener(this::jTextField3ActionPerformed);
+        numeroCuenta.addActionListener(this::numeroCuentaActionPerformed);
 
-        jTextField4.addActionListener(this::jTextField4ActionPerformed);
+        nombreTitular.addActionListener(this::nombreTitularActionPerformed);
 
-        jScrollPane1.setViewportView(jEditorPane1);
+        jScrollPane1.setViewportView(saldoInicial);
 
-        jScrollPane2.setViewportView(jEditorPane2);
+        jScrollPane2.setViewportView(cupoSobregiro);
 
-        jLabel9.setText("jLabel9");
+        fecha.setText("jLabel9");
+
+        jLabel9.setText("Operaciones");
+
+        jLabel10.setText("Resultados");
+
+        jLabel11.setText("Numero cuenta:");
+
+        jLabel12.setText("Saldo:");
+
+        jLabel13.setText("Fecha de creacion:");
+
+        jLabel14.setText("Tipo de cuenta:");
+
+        jLabel15.setText("Titular:");
+
+        numeroCuentaResultados.setText("jLabel16");
+
+        saldoActualResultados.setText("jLabel16");
+
+        fechaCreacionCuenta.setText("jLabel16");
+
+        tipoCuentaResultados.setText("jLabel16");
+
+        nombreTitularResultados.setText("jLabel16");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(233, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(160, 160, 160))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(307, 307, 307))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -126,9 +189,9 @@ public class VistaBanco extends javax.swing.JFrame {
                             .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jComboBox1, 0, 628, Short.MAX_VALUE)
-                            .addComponent(jTextField3)
-                            .addComponent(jTextField4))
+                            .addComponent(seleccionTipoCuenta, 0, 628, Short.MAX_VALUE)
+                            .addComponent(numeroCuenta)
+                            .addComponent(nombreTitular))
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -136,27 +199,55 @@ public class VistaBanco extends javax.swing.JFrame {
                             .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField2)
-                            .addComponent(jTextField1))
+                            .addComponent(numeroCuenta2)
+                            .addComponent(valorTransaccion))
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton2)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton3)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton4)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton5))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(112, 112, 112)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                        .addContainerGap())))
+                                    .addComponent(fecha, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel11)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
+                                                .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(layout.createSequentialGroup()
+                                                    .addGap(303, 303, 303)
+                                                    .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGroup(layout.createSequentialGroup()
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(saldoActualResultados, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(fechaCreacionCuenta, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(numeroCuentaResultados, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(tipoCuentaResultados, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(botonConsignar)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(botonRetirar)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(consultaSaldo)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(verDatos))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(nombreTitularResultados, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 66, Short.MAX_VALUE)))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(botonCrearCuenta, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(160, 160, 160))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -164,19 +255,19 @@ public class VistaBanco extends javax.swing.JFrame {
                 .addGap(11, 11, 11)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(seleccionTipoCuenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(numeroCuenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(nombreTitular, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jLabel9))
+                    .addComponent(fecha))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
@@ -186,58 +277,174 @@ public class VistaBanco extends javax.swing.JFrame {
                     .addComponent(jLabel6)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
-                .addGap(43, 43, 43)
+                .addComponent(botonCrearCuenta)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel9)
+                .addGap(15, 15, 15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(numeroCuenta2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(valorTransaccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4)
-                    .addComponent(jButton5))
-                .addContainerGap(88, Short.MAX_VALUE))
+                    .addComponent(botonConsignar)
+                    .addComponent(botonRetirar)
+                    .addComponent(consultaSaldo)
+                    .addComponent(verDatos))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(jLabel15)
+                    .addComponent(nombreTitularResultados))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel11)
+                    .addComponent(numeroCuentaResultados))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
+                    .addComponent(saldoActualResultados))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel13)
+                    .addComponent(fechaCreacionCuenta, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel14)
+                    .addComponent(tipoCuentaResultados))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void botonCrearCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCrearCuentaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+        try {
+            String tipo = (String) seleccionTipoCuenta.getSelectedItem();
+            String num = numeroCuenta.getText().trim();
+            String titular = nombreTitular.getText().trim();
+            
+            String[] partesFecha = fecha.getText().split("/");
+            int dia = Integer.parseInt(partesFecha[0].trim());
+            int mes = Integer.parseInt(partesFecha[1].trim());
+            int anio = Integer.parseInt(partesFecha[2].trim());
+            Fecha fApertura = new Fecha(dia, mes, anio);
+            
+            // Nota: saldoInicial y cupoSobregiro son JEditorPane. Para leer su texto se usa .getText()
+            double saldo = Double.parseDouble(saldoInicial.getText().trim());
+            String resultado = "";
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+            if (tipo.equals("Ahorros")) {
+                resultado = controlador.crearCuentaAhorros(num, titular, fApertura, saldo);
+            } else if (tipo.equals("Corriente")) {
+                double cupo = Double.parseDouble(cupoSobregiro.getText().trim());
+                resultado = controlador.crearCuentaCorriente(num, titular, fApertura, saldo, cupo);
+            }
+            
+            javax.swing.JOptionPane.showMessageDialog(this, resultado);
+            
+            // Si se creó con éxito, mostramos los datos inmediatamente en los labels de resultados
+            Cuenta cCreada = controlador.buscar(num);
+            if (cCreada != null) {
+                mostrarDatosEnPantalla(cCreada);
+            }
+            
+        } catch (NumberFormatException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Error: Verifique que el saldo y el cupo sean valores numéricos válidos.", "Error de formato", javax.swing.JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Error al crear la cuenta: " + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_botonCrearCuentaActionPerformed
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+    private void seleccionTipoCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_seleccionTipoCuentaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+    }//GEN-LAST:event_seleccionTipoCuentaActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void numeroCuenta2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numeroCuenta2ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_numeroCuenta2ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void botonConsignarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonConsignarActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+        String numCuenta = numeroCuenta2.getText().trim();
+    try {
+        double valor = Double.parseDouble(valorTransaccion.getText().trim());
+        String respuesta = controlador.consignar(numCuenta, valor);
+        javax.swing.JOptionPane.showMessageDialog(this, respuesta);
+        
+        // Actualizamos el saldo y el número de cuenta en pantalla tras la consignación
+        Cuenta c = controlador.buscar(numCuenta);
+        if (c != null) {
+            limpiarResultados();
+            numeroCuentaResultados.setText(c.getNumero());
+            saldoActualResultados.setText("$ " + c.getSaldo());
+        }
+    } catch (NumberFormatException e) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Ingrese un valor numérico válido para consignar.", "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+    }
+    }//GEN-LAST:event_botonConsignarActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void botonRetirarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonRetirarActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton5ActionPerformed
+        String numCuenta = numeroCuenta2.getText().trim();
+        try {
+            double valor = Double.parseDouble(valorTransaccion.getText().trim());
+            String respuesta = controlador.retirar(numCuenta, valor);
+            javax.swing.JOptionPane.showMessageDialog(this, respuesta);
+            
+            // Actualizar la vista con el nuevo saldo
+            Cuenta c = controlador.buscar(numCuenta);
+            mostrarDatosEnPantalla(c);
+            
+        } catch (NumberFormatException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Ingrese un valor numérico válido para retirar.", "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_botonRetirarActionPerformed
 
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+    private void verDatosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verDatosActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField3ActionPerformed
+        String numCuenta = numeroCuenta2.getText().trim();
+    Cuenta c = controlador.buscar(numCuenta);
+    
+    if (c != null) {
+        // Muestra absolutamente todos los datos en sus respectivas etiquetas
+        numeroCuentaResultados.setText(c.getNumero());
+        saldoActualResultados.setText("$ " + c.getSaldo());
+        fechaCreacionCuenta.setText(c.getFechaApertura().toString());
+        tipoCuentaResultados.setText(c.getTipo());
+        nombreTitularResultados.setText(c.getTitular());
+    } else {
+        javax.swing.JOptionPane.showMessageDialog(this, "La cuenta no existe.", "Aviso", javax.swing.JOptionPane.WARNING_MESSAGE);
+        limpiarResultados();
+    }
+    }//GEN-LAST:event_verDatosActionPerformed
 
-    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
+    private void numeroCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numeroCuentaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField4ActionPerformed
+    }//GEN-LAST:event_numeroCuentaActionPerformed
+
+    private void nombreTitularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nombreTitularActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nombreTitularActionPerformed
+
+    private void consultaSaldoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultaSaldoActionPerformed
+        // TODO add your handling code here:
+        String numCuenta = numeroCuenta2.getText().trim();
+    Cuenta c = controlador.buscar(numCuenta);
+    
+    if (c != null) {
+        limpiarResultados(); // Primero limpiamos todo
+        numeroCuentaResultados.setText(c.getNumero());
+        saldoActualResultados.setText("$ " + c.getSaldo());
+    } else {
+        javax.swing.JOptionPane.showMessageDialog(this, "La cuenta no existe.", "Aviso", javax.swing.JOptionPane.WARNING_MESSAGE);
+        limpiarResultados();
+    }
+    }//GEN-LAST:event_consultaSaldoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -245,11 +452,6 @@ public class VistaBanco extends javax.swing.JFrame {
      * 
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -260,23 +462,26 @@ public class VistaBanco extends javax.swing.JFrame {
         } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
 
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new VistaBanco().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
+    private javax.swing.JButton botonConsignar;
+    private javax.swing.JButton botonCrearCuenta;
+    private javax.swing.JButton botonRetirar;
+    private javax.swing.JButton consultaSaldo;
+    private javax.swing.JEditorPane cupoSobregiro;
+    private javax.swing.JLabel fecha;
+    private javax.swing.JLabel fechaCreacionCuenta;
     private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JEditorPane jEditorPane1;
-    private javax.swing.JEditorPane jEditorPane2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -287,9 +492,16 @@ public class VistaBanco extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
+    private javax.swing.JTextField nombreTitular;
+    private javax.swing.JLabel nombreTitularResultados;
+    private javax.swing.JTextField numeroCuenta;
+    private javax.swing.JTextField numeroCuenta2;
+    private javax.swing.JLabel numeroCuentaResultados;
+    private javax.swing.JLabel saldoActualResultados;
+    private javax.swing.JEditorPane saldoInicial;
+    private javax.swing.JComboBox<String> seleccionTipoCuenta;
+    private javax.swing.JLabel tipoCuentaResultados;
+    private javax.swing.JTextField valorTransaccion;
+    private javax.swing.JButton verDatos;
     // End of variables declaration//GEN-END:variables
 }
