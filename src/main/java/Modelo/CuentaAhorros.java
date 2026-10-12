@@ -8,6 +8,29 @@ package Modelo;
  *
  * @author juanj
  */
-public class CuentaAhorros {
-    
+package Modelo;
+ 
+public class CuentaAhorros extends Cuenta {
+ 
+    public CuentaAhorros(String numero, String titular, Fecha fecha) {
+        super(numero, titular, fecha);
+    }
+ 
+    public CuentaAhorros(String numero, String titular, Fecha fecha, double saldo) {
+        super(numero, titular, fecha, saldo);
+    }
+ 
+    // Solo retira si el valor no supera el saldo
+    public boolean retirar(double valor) {
+        if (valor <= saldo) {
+            saldo = saldo - valor;
+            return true;
+        } else {
+            return false;
+        }
+    }
+ 
+    public String getTipo() {
+        return "Cuenta de Ahorros";
+    }
 }
