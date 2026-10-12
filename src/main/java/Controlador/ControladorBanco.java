@@ -8,8 +8,6 @@ package Controlador;
  *
  * @author juanj
  */
-package Controlador;
- 
 import java.util.ArrayList;
 import Modelo.*;
  

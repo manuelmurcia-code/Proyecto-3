@@ -8,8 +8,7 @@ package Modelo;
  *
  * @author juanj
  */
-package Modelo;
- 
+
 public class CuentaAhorros extends Cuenta {
  
     public CuentaAhorros(String numero, String titular, Fecha fecha) {

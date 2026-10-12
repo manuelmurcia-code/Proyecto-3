@@ -8,8 +8,6 @@ package Principal;
  *
  * @author juanj
  */
-package Principal;
- 
 import Vista.VistaBanco;
  
 public class Main {

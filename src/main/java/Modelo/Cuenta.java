@@ -8,8 +8,7 @@ package Modelo;
  *
  * @author juanj
  */
-package Modelo;
- 
+
 public abstract class Cuenta {
     protected String numero;
     protected String titular;
